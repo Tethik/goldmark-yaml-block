@@ -1,7 +1,8 @@
 # README
 
-This is an extension to goldmark markdown that enables custom parsing logic for threats/controls,
-to be used in a documentation system.
+⚠️ WIP - Work in progress
+
+This is an extension to [goldmark markdown](https://github.com/yuin/goldmark) that enables custom parsing logic for threats/controls, to be used in a documentation system. Heavily based on [goldmark-meta](https://github.com/yuin/goldmark-meta).
 
 It overrides the normal code-block parsing when detecting `yml control` or `yml threat` and
 decodes the yaml code within.
