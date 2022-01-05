@@ -5,65 +5,41 @@ import (
 )
 
 // A TaskCheckBox struct represents a checkbox of a task list.
-type ThreatNode struct {
+type TMNode struct {
 	gast.BaseBlock
+	kind gast.NodeKind
 }
 
 // Dump implements Node.Dump.
-func (n *ThreatNode) Dump(source []byte, level int) {
+func (n *TMNode) Dump(source []byte, level int) {
 	m := map[string]string{
 		
 	}
 	gast.DumpHelper(n, source, level, m, nil)
 }
 
-// KindThreat is a NodeKind of the TaskCheckBox node.
+
 var KindThreat = gast.NewNodeKind("Threat")
-
-// Kind implements Node.Kind.
-func (n *ThreatNode) Kind() gast.NodeKind {
-	return KindThreat
-}
-
-// IsRaw seems to prevent any child nodes from being parsed
-func (n *ThreatNode) IsRaw() bool {
-	return true
-}
-
-// NewTaskCheckBox returns a new TaskCheckBox node.
-func NewThreatNode() *ThreatNode {
-	return &ThreatNode{
-	}
-}
-
-
-// A TaskCheckBox struct represents a checkbox of a task list.
-type ControlNode struct {
-	gast.BaseBlock	
-}
-
-// Dump implements Node.Dump.
-func (n *ControlNode) Dump(source []byte, level int) {
-	m := map[string]string{
-		
-	}
-	gast.DumpHelper(n, source, level, m, nil)
-}
-
-// KindThreat is a NodeKind of the TaskCheckBox node.
 var KindControl = gast.NewNodeKind("Control")
 
+
 // Kind implements Node.Kind.
-func (n *ControlNode) Kind() gast.NodeKind {
-	return KindControl
+func (n *TMNode) Kind() gast.NodeKind {
+	return n.kind
 }
 
 // IsRaw seems to prevent any child nodes from being parsed
-func (n *ControlNode) IsRaw() bool {
+func (n *TMNode) IsRaw() bool {
 	return true
 }
 
-// NewTaskCheckBox returns a new TaskCheckBox node.
-func NewControlNode() *ControlNode {
-	return &ControlNode{}
+// Returns a new ThreatNode
+func NewTMNode(kind gast.NodeKind) *TMNode {
+	return &TMNode{
+		kind: kind,
+	}
 }
+
+
+
+

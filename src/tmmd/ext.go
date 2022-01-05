@@ -2,26 +2,27 @@ package tmmd
 
 import (
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/util"
 )
 
-type data struct {
-	Threats []ThreatData 
-	Controls []ControlData 
+type TMData struct {
+	Data map[ast.NodeKind][]interface{}
+	// TODO better error handling
 	Error error
 }
 
 var contextKey = parser.NewContextKey()
 
 // Get returns a YAML metadata.
-func Get(pc parser.Context) *data {
+func Get(pc parser.Context) *TMData {
 	v := pc.Get(contextKey)
 	if v == nil {
 		return nil
 	}
-	d := v.(*data)
+	d := v.(*TMData)
 	return d
 }
 

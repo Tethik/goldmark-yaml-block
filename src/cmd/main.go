@@ -53,8 +53,8 @@ func main() {
 
 	var output Output
 	output.Meta = metaData
-	output.Threats = tmmd.Get(context).Threats
-	output.Controls = tmmd.Get(context).Controls    
+	output.Threats = tmmd.GetThreats(context)
+	output.Controls = tmmd.GetControls(context)
 
 	var buf bytes.Buffer
 	if err := md.Convert(source, &buf); err != nil {
