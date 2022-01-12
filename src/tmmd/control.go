@@ -33,6 +33,9 @@ func GetControls(pc parser.Context) []ControlData {
 	for _, v := range l {
 		var control ControlData
 		mapstructure.Decode(v, &control)
+		if control.Mitigates == nil {
+			control.Mitigates = make([]string, 0)
+		}
 		controls = append(controls, control)		
 	}
 
