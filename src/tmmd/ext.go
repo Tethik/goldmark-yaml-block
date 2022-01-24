@@ -27,7 +27,7 @@ func Get(pc parser.Context) *TMData {
 	return d
 }
 
-type threatModelingExt struct {
+type yamlBlockExt struct {
 	blocks []string
 	kinds []ast.NodeKind
 }
@@ -35,11 +35,11 @@ type threatModelingExt struct {
 
 
 // Threat is an extension to allow for documenting threat modeling threats.
-func CreateThreatModelingExtension(blocks ...string) *threatModelingExt {
-	return &threatModelingExt{blocks, make([]ast.NodeKind, len(blocks))}
+func CreateYamlBlockExtension(blocks ...string) *yamlBlockExt {
+	return &yamlBlockExt{blocks, make([]ast.NodeKind, len(blocks))}
 }
 
-func (e *threatModelingExt) Extend(m goldmark.Markdown) {
+func (e *yamlBlockExt) Extend(m goldmark.Markdown) {
 	parsers := make([]util.PrioritizedValue, len(e.blocks))	
 	for i, block := range e.blocks {		
 		e.kinds[i] = ast.NewNodeKind(block)
@@ -50,7 +50,7 @@ func (e *threatModelingExt) Extend(m goldmark.Markdown) {
 		parsers...
 	))
 	m.Renderer().AddOptions(renderer.WithNodeRenderers(
-		util.Prioritized(e.NewThreatBlockRenderer(), 100),		
+		util.Prioritized(e.NewYamlBlockRenderer(), 100),
 	))
 }
 

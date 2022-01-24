@@ -53,7 +53,7 @@ func main() {
 		panic(err)
 	}
 
-	ext := tmmd.CreateThreatModelingExtension("control", "threat")
+	ext := tmmd.CreateYamlBlockExtension("control", "threat")
 
 	md := goldmark.New(
 		goldmark.WithExtensions(extension.GFM, ext, meta.Meta),

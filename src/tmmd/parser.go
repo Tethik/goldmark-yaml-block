@@ -55,7 +55,7 @@ func (s *blockParser) Open(parent ast.Node, reader text.Reader, pc parser.Contex
 	if (pos > 0 || !s.isStartTag(line)) {		
 		return nil, parser.NoChildren
 	}		
-	node := NewTMNode(s.kind)	
+	node := NewYamlNode(s.kind)	
 	return node, parser.NoChildren
 }
 

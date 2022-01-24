@@ -7,10 +7,10 @@ import (
 )
 
 type TMBlockRenderer struct {
-	e *threatModelingExt
+	e *yamlBlockExt
 }
 
-func (e *threatModelingExt) NewThreatBlockRenderer() renderer.NodeRenderer {
+func (e *yamlBlockExt) NewYamlBlockRenderer() renderer.NodeRenderer {
 	return &TMBlockRenderer{e}
 }
 
@@ -29,6 +29,7 @@ func (r *TMBlockRenderer) writeLines(w util.BufWriter, source []byte, n gast.Nod
 }
 
 func (r *TMBlockRenderer) renderBlock(w util.BufWriter, source []byte, node gast.Node, entering bool) (gast.WalkStatus, error) {
+	// TODO: include kind, render better?
 	if entering {
 		_, _ = w.WriteString("<pre>\n")
 		r.writeLines(w, source, node)

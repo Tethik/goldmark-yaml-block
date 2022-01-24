@@ -5,13 +5,13 @@ import (
 )
 
 // A TaskCheckBox struct represents a checkbox of a task list.
-type TMNode struct {
+type YamlNode struct {
 	gast.BaseBlock
 	kind gast.NodeKind
 }
 
 // Dump implements Node.Dump.
-func (n *TMNode) Dump(source []byte, level int) {
+func (n *YamlNode) Dump(source []byte, level int) {
 	m := map[string]string{
 		
 	}
@@ -20,18 +20,18 @@ func (n *TMNode) Dump(source []byte, level int) {
 
 
 // Kind implements Node.Kind.
-func (n *TMNode) Kind() gast.NodeKind {
+func (n *YamlNode) Kind() gast.NodeKind {
 	return n.kind
 }
 
 // IsRaw seems to prevent any child nodes from being parsed
-func (n *TMNode) IsRaw() bool {
+func (n *YamlNode) IsRaw() bool {
 	return true
 }
 
 // Returns a new ThreatNode
-func NewTMNode(kind gast.NodeKind) *TMNode {
-	return &TMNode{
+func NewYamlNode(kind gast.NodeKind) *YamlNode {
+	return &YamlNode{
 		kind: kind,
 	}
 }
