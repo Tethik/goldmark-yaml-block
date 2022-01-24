@@ -103,9 +103,9 @@ func (s *blockParser) Close(node ast.Node, reader text.Reader, pc parser.Context
 	d, ok := pc.Get(contextKey).(*TMData)
 	if !ok {		
 		d = &TMData{
-			Data: make(map[ast.NodeKind][]interface{}),
+			Data: make(map[string][]interface{}),
 		}
-	}	
+	}
 	
 	lines := node.Lines()
 	var buf bytes.Buffer
@@ -118,10 +118,10 @@ func (s *blockParser) Close(node ast.Node, reader text.Reader, pc parser.Context
 	if err := yaml.Unmarshal(buf.Bytes(), &item); err != nil {		
 		d.Error = err
 	} else {			
-		if _, ok := d.Data[s.kind]; !ok {
-			d.Data[s.kind] = make([]interface{}, 0)
+		if _, ok := d.Data[s.kind.String()]; !ok {
+			d.Data[s.kind.String()] = make([]interface{}, 0)
 		}
-		d.Data[s.kind] = append(d.Data[s.kind], item)
+		d.Data[s.kind.String()] = append(d.Data[s.kind.String()], item)
 	}
 
 	pc.Set(contextKey, d)

@@ -19,10 +19,6 @@ func (n *TMNode) Dump(source []byte, level int) {
 }
 
 
-var KindThreat = gast.NewNodeKind("Threat")
-var KindControl = gast.NewNodeKind("Control")
-
-
 // Kind implements Node.Kind.
 func (n *TMNode) Kind() gast.NodeKind {
 	return n.kind

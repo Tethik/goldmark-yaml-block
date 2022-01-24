@@ -1,6 +1,7 @@
 package tmmd
 
 import (
+	"github.com/mitchellh/mapstructure"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/parser"
@@ -9,7 +10,7 @@ import (
 )
 
 type TMData struct {
-	Data map[ast.NodeKind][]interface{}
+	Data map[string][]interface{}
 	// TODO better error handling
 	Error error
 }
@@ -27,17 +28,46 @@ func Get(pc parser.Context) *TMData {
 }
 
 type threatModelingExt struct {
+	blocks []string
+	kinds []ast.NodeKind
 }
 
+
+
 // Threat is an extension to allow for documenting threat modeling threats.
-var ThreatModelingExtension = &threatModelingExt{}
+func CreateThreatModelingExtension(blocks ...string) *threatModelingExt {
+	return &threatModelingExt{blocks, make([]ast.NodeKind, len(blocks))}
+}
 
 func (e *threatModelingExt) Extend(m goldmark.Markdown) {
+	parsers := make([]util.PrioritizedValue, len(e.blocks))	
+	for i, block := range e.blocks {		
+		e.kinds[i] = ast.NewNodeKind(block)
+		parsers[i] = util.Prioritized(newBlockParser(block, e.kinds[i]), 100)	
+	}
+
 	m.Parser().AddOptions(parser.WithBlockParsers(
-		util.Prioritized(NewThreatParser(), 100),
-		util.Prioritized(NewControlParser(), 100),
+		parsers...
 	))
 	m.Renderer().AddOptions(renderer.WithNodeRenderers(
-		util.Prioritized(NewThreatBlockRenderer(), 100),		
+		util.Prioritized(e.NewThreatBlockRenderer(), 100),		
 	))
+}
+
+// Get returns a YAML metadata.
+func GetItems(name string, factory func()interface{}, pc parser.Context) []interface{} {	
+	items := make([]interface{}, 0)
+	v := pc.Get(contextKey)
+	if v == nil {
+		return items
+	}
+	d := v.(*TMData)
+	l := d.Data[name]
+	
+	for _, v := range l {
+		item := factory()		
+		mapstructure.Decode(v, &item)		
+		items = append(items, item)		
+	}	
+	return items
 }

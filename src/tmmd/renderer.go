@@ -6,15 +6,18 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-type TMBlockRenderer struct {}
+type TMBlockRenderer struct {
+	e *threatModelingExt
+}
 
-func NewThreatBlockRenderer() renderer.NodeRenderer {
-	return &TMBlockRenderer{}
+func (e *threatModelingExt) NewThreatBlockRenderer() renderer.NodeRenderer {
+	return &TMBlockRenderer{e}
 }
 
 func (r *TMBlockRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
-	reg.Register(KindThreat, r.renderThreatBlock)
-	reg.Register(KindControl, r.renderControlBlock)
+	for _, kind := range r.e.kinds {
+		reg.Register(kind, r.renderBlock)
+	}
 }
 
 func (r *TMBlockRenderer) writeLines(w util.BufWriter, source []byte, n gast.Node) {
@@ -25,17 +28,7 @@ func (r *TMBlockRenderer) writeLines(w util.BufWriter, source []byte, n gast.Nod
 	}
 }
 
-func (r *TMBlockRenderer) renderThreatBlock(w util.BufWriter, source []byte, node gast.Node, entering bool) (gast.WalkStatus, error) {
-	if entering {
-		_, _ = w.WriteString("<pre>\n")
-		r.writeLines(w, source, node)
-	} else {
-		_, _ = w.WriteString("</pre>\n")
-	}
-	return gast.WalkContinue, nil
-}
-
-func (r *TMBlockRenderer) renderControlBlock(w util.BufWriter, source []byte, node gast.Node, entering bool) (gast.WalkStatus, error) {	
+func (r *TMBlockRenderer) renderBlock(w util.BufWriter, source []byte, node gast.Node, entering bool) (gast.WalkStatus, error) {
 	if entering {
 		_, _ = w.WriteString("<pre>\n")
 		r.writeLines(w, source, node)

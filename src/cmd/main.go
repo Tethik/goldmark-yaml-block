@@ -18,9 +18,32 @@ import (
 
 type Output struct {
 	Meta map[string]interface{}
-	Threats []tmmd.ThreatData
-	Controls []tmmd.ControlData
+	Threats []*ThreatData
+	Controls []*ControlData
 }
+
+type ThreatData struct {
+	Slug string `yaml:"slug" json:"slug"`
+	Title string `yaml:"title" json:"title"`
+	Description string `yaml:"description,omitempty" json:"description"`
+}
+
+type ControlData struct {
+	Slug string `yaml:"slug" json:"slug"`
+	Title string `yaml:"title" json:"title"`
+	Description string `yaml:"description,omitempty" json:"description"`
+	Mitigates []string `yaml:"mitigates,omitempty" json:"mitigates"`
+}
+
+func NewControlData() interface{} {
+	return &ControlData{}
+}
+
+func NewThreatData() interface{} {
+	return &ThreatData{}
+}
+
+
 
 func main() {
 	fn := os.Args[1]
@@ -30,8 +53,10 @@ func main() {
 		panic(err)
 	}
 
+	ext := tmmd.CreateThreatModelingExtension("control", "threat")
+
 	md := goldmark.New(
-		goldmark.WithExtensions(extension.GFM, tmmd.ThreatModelingExtension, meta.Meta),
+		goldmark.WithExtensions(extension.GFM, ext, meta.Meta),
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(),
 		),
@@ -46,21 +71,24 @@ func main() {
 	
 	metaData := meta.Get(context)
 
-
-	// if Get(context).Error != nil {
-	// 	panic(Get(context).Error)
-	// }
-
 	var output Output
 	output.Meta = metaData
-	output.Threats = tmmd.GetThreats(context)
-	output.Controls = tmmd.GetControls(context)
+	items := tmmd.GetItems("threat", NewThreatData, context)	 
+	for _, item := range items {
+		output.Threats = append(output.Threats, item.(*ThreatData))
+	}
+	items = tmmd.GetItems("control", NewControlData, context)
+	for _, item := range items {
+		output.Controls = append(output.Controls, item.(*ControlData))
+	}
+	
 
 	var buf bytes.Buffer
 	if err := md.Convert(source, &buf); err != nil {
 		panic(err)
 	}
 
+	
 	fmt.Println()
 	fmt.Println(buf.String())
 	fmt.Println()
