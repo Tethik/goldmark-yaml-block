@@ -9,21 +9,21 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-type TMData struct {
+type YamlData struct {
 	Data map[string][]interface{}
 	// TODO better error handling
-	Error error
+	Errors []error
 }
 
 var contextKey = parser.NewContextKey()
 
 // Get returns a YAML metadata.
-func Get(pc parser.Context) *TMData {
+func Get(pc parser.Context) *YamlData {
 	v := pc.Get(contextKey)
 	if v == nil {
 		return nil
 	}
-	d := v.(*TMData)
+	d := v.(*YamlData)
 	return d
 }
 
@@ -54,14 +54,14 @@ func (e *yamlBlockExt) Extend(m goldmark.Markdown) {
 	))
 }
 
-// Get returns a YAML metadata.
+// Get returns YAML items
 func GetItems(name string, factory func()interface{}, pc parser.Context) []interface{} {	
 	items := make([]interface{}, 0)
 	v := pc.Get(contextKey)
 	if v == nil {
 		return items
 	}
-	d := v.(*TMData)
+	d := v.(*YamlData)
 	l := d.Data[name]
 	
 	for _, v := range l {
@@ -70,4 +70,14 @@ func GetItems(name string, factory func()interface{}, pc parser.Context) []inter
 		items = append(items, item)		
 	}	
 	return items
+}
+
+// Returns any errors found while parsing YAML
+func GetErrors(pc parser.Context) []error {
+	v := pc.Get(contextKey)
+	if v == nil {
+		return []error{}
+	}
+	d := v.(*YamlData)
+	return d.Errors
 }

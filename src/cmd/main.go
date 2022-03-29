@@ -81,6 +81,13 @@ func main() {
 	for _, item := range items {
 		output.Controls = append(output.Controls, item.(*ControlData))
 	}
+	errors := tmmd.GetErrors(context)
+	if len(errors) > 0 {
+		fmt.Println("Encountered errors while parsing the YAML block:")
+		for _, err := range errors {
+			fmt.Println(err)
+		}
+	}
 	
 
 	var buf bytes.Buffer
@@ -88,7 +95,6 @@ func main() {
 		panic(err)
 	}
 
-	
 	fmt.Println()
 	fmt.Println(buf.String())
 	fmt.Println()

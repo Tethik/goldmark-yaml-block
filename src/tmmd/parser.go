@@ -2,6 +2,7 @@ package tmmd
 
 import (
 	"bytes"
+	"fmt"
 	"regexp"
 
 	"github.com/yuin/goldmark/ast"
@@ -100,9 +101,9 @@ func (s *blockParser) CanInterruptParagraph() bool {
 
 // Close will be called when the parser returns Close.
 func (s *blockParser) Close(node ast.Node, reader text.Reader, pc parser.Context) {	
-	d, ok := pc.Get(contextKey).(*TMData)
+	d, ok := pc.Get(contextKey).(*YamlData)
 	if !ok {		
-		d = &TMData{
+		d = &YamlData{
 			Data: make(map[string][]interface{}),
 		}
 	}
@@ -115,8 +116,9 @@ func (s *blockParser) Close(node ast.Node, reader text.Reader, pc parser.Context
 	}	
 
 	var item map[string]interface{}
-	if err := yaml.Unmarshal(buf.Bytes(), &item); err != nil {		
-		d.Error = err
+	if err := yaml.Unmarshal(buf.Bytes(), &item); err != nil {				
+		informativeError := fmt.Errorf("parsing yaml block failed: \n```\n%s\n```\nerror: %s", buf.Bytes(), err)
+		d.Errors = append(d.Errors, informativeError)
 	} else {			
 		if _, ok := d.Data[s.kind.String()]; !ok {
 			d.Data[s.kind.String()] = make([]interface{}, 0)
