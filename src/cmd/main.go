@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/Tethik/threat-modeling-markdown/src/tmmd"
+	"github.com/Tethik/goldmark-yaml-block/src/tmmd"
 	"github.com/yuin/goldmark"
 	meta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/extension"
@@ -88,7 +88,7 @@ func main() {
 			fmt.Println(err)
 		}
 	}
-	
+
 
 	var buf bytes.Buffer
 	if err := md.Convert(source, &buf); err != nil {

@@ -117,7 +117,7 @@ func (s *blockParser) Close(node ast.Node, reader text.Reader, pc parser.Context
 
 	var item map[string]interface{}
 	if err := yaml.Unmarshal(buf.Bytes(), &item); err != nil {				
-		informativeError := fmt.Errorf("parsing yaml block failed: \n```\n%s\n```\nerror: %s", buf.Bytes(), err)
+		informativeError := fmt.Errorf("parsing %s yaml block failed: \n```\n%s\n```\nerror: %s", s.kind.String(), buf.Bytes(), err)
 		d.Errors = append(d.Errors, informativeError)
 	} else {			
 		if _, ok := d.Data[s.kind.String()]; !ok {

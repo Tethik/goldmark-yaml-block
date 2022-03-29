@@ -1,4 +1,4 @@
-module github.com/Tethik/threat-modeling-markdown
+module github.com/Tethik/goldmark-yaml-block
 
 go 1.14
 
